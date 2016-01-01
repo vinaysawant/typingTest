@@ -1,0 +1,15 @@
+.typing-success{
+    font-weight: bold;
+    color: green
+}
+
+.typing-error{
+    font-weight: bold;
+    color: red;
+}
+.f18{
+    font-size: 22px;
+    height: 40%;
+    color: gray;
+    overflow: scroll;
+}

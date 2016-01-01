@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="typingApp" ng-controller="main_controller">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Typing test application</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="navbar navbar-default navbar-static-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Typing Test</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <div class="nav navbar-text navbar-right">
+                Time: 2:00
+            </div>
+        </div>
+        <!--/.nav-collapse -->
+    </div>
+</nav>
+
+<div class="container" style="height: 100%;">
+    <div class="jumbotron f18" dynamic="paragraph">
+        <!--{{paragraph}}-->
+    </div>
+
+    <textarea typing-speed class="form-control f18" rows="10" ng-model="userText" placeholder="Start typing here to start the test..."></textarea>
+    {{userText}}
+</div>
+
+<div class="modal fade" id="result_modal" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+        </div>
+        <div class="modal-body">
+            <h1>This is body</h1>
+        </div>
+    </div>
+</div>
+
+<!--Java scripts -->
+<script type="text/javascript" src="js/angular.min.js"></script>
+<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/app.js"></script>
+</body>
+</html>
