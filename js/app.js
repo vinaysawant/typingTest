@@ -35,31 +35,87 @@ app.factory('Paragraph', function () {
         return '<span class="typing-error">' + letter + '</span>';
     };
 
+    paragraph.calculateAccuracy = function (input) {
+
+        var para = paragraph.getParagraph(0).split(" ");
+        var words = input.split(" ");
+
+        var successCount = 0;
+        var errorCount = 0;
+        var inputLength = words.length;
+        console.log("Inputlength", inputLength)
+
+        for (var i = 0; i < inputLength; i++) {
+            if (words[i] == para[i]) {
+                successCount++;
+            } else {
+                errorCount++
+            }
+        }
+
+        return Math.floor((successCount / inputLength) * 100);
+
+    };
+
+    paragraph.calculateSpeed = function (input, time) {
+
+        console.log("Input", input)
+        console.log("Time", time)
+        var speed = {kpm: 0, wpm: 0};
+
+        speed.kpm = Math.floor(input.length / time); //Keys per minute
+        speed.wpm = Math.floor(input.split(" ").length / time); //words per minute
+
+        return speed;
+
+    };
+
 
     return paragraph;
 });
 
-app.factory('Timer',function(){
+app.controller('main_controller', ['$scope', 'Paragraph', '$interval', '$window', function ($scope, Paragraph, $interval, $window) {
 
-    var timer = {};
+    var minutes = 1;
+    var seconds = 60;
 
-    timer.time = 2;
-
-    timer.startTimer = function(){
-
+    $scope.resetTest =function () {
+        $scope.timerStatus = false;
+        $scope.paragraph = Paragraph.getParagraph(0);
+        $scope.timer = minutes * seconds;
+        $scope.minutes = minutes;
+        $scope.seconds = '00';
+        $scope.userText = '';
+        $scope.speed = {};
     };
 
-    timer.stopTimer = function(){
+    $scope.resetTest();
 
+    $scope.startTime = function () {
+        var startTimer = $interval(function () {
+
+            $scope.timer = $scope.timer - 1;
+            $scope.minutes = Math.floor($scope.timer / seconds);
+            $scope.seconds = $scope.timer % seconds;
+
+            if ($scope.timer == 0) {
+                $interval.cancel(startTimer);
+                $scope.accuracy = Paragraph.calculateAccuracy($scope.userText);
+                $scope.speed = Paragraph.calculateSpeed($scope.userText, minutes);
+
+                $scope.openModal();
+            }
+        }, 1000);
     };
-});
 
-app.controller('main_controller', ['$scope', 'Paragraph', function ($scope, Paragraph) {
+    $scope.openModal = function () {
+        $window.jQuery("#result_modal").modal('show');
+    };
 
-    console.log("Executing main controller");
+    $window.jQuery("#result_modal").on('hidden.bs.modal', function () {
+        $scope.resetTest();
+    });
 
-    $scope.paragraph = Paragraph.getParagraph(0);
-    $scope.userText = '';
 
 }]);
 
@@ -93,24 +149,36 @@ app.directive('typingSpeed', function (Paragraph) {
         link: function (scope, element, attrs) {
 
             scope._paragraph = scope.paragraph;
+            var paragraph_length = scope._paragraph.length;
 
             scope.$watch('userText', function (newVal, oldVal) {
 
-                var replaceString = '';
+                var input_text_length = newVal.length;
 
-                for (var i = 0; i < newVal.length; i++) {
+                if (paragraph_length > input_text_length) {
 
-                    var user_letter = newVal[i];
-                    var paragraph_letter = scope._paragraph[i];
-
-                    if (paragraph_letter == user_letter) {
-                        replaceString += Paragraph.getSuccessKeySpan(paragraph_letter);
-                    } else {
-                        replaceString += Paragraph.getFailureKeySpan(paragraph_letter);
+                    if (!scope.timerStatus && input_text_length > 0) {
+                        scope.timerStatus = true;
+                        scope.startTime();
                     }
-                }
 
-                scope.paragraph = replaceString + scope._paragraph.slice(newVal.length)
+                    var replaceString = '';
+
+                    for (var i = 0; i < input_text_length; i++) {
+
+                        var user_letter = newVal[i];
+                        var paragraph_letter = scope._paragraph[i];
+
+                        if (paragraph_letter == user_letter) {
+                            replaceString += Paragraph.getSuccessKeySpan(paragraph_letter);
+                        } else {
+                            replaceString += Paragraph.getFailureKeySpan(paragraph_letter);
+                        }
+                    }
+
+                    scope.paragraph = replaceString + scope._paragraph.slice(input_text_length)
+
+                }
 
             })
         }

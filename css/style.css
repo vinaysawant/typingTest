@@ -45,3 +45,8 @@
     /*overflow: scroll;*/
     padding: 25px;
 }
+
+.result{
+    font-size: 20px;
+    color: #080808;
+}
