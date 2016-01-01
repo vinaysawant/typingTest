@@ -1,9 +1,9 @@
-/**
- * Created by vinay on 30/12/15.
- */
 var app = angular.module("typingApp", []);
 
-
+/**
+ * Manages Paragraph used for typing
+ * Logic to calculate speed and accuracy
+ */
 app.factory('Paragraph', function () {
 
     var paragraph = {};
@@ -12,7 +12,7 @@ app.factory('Paragraph', function () {
     'Keyboards and typing technology have come a long way over the past couple centuries.' +
     ' The first typing devices were designed and patented in the 1700s while the first' +
     ' manufactured typing devices came about in the 1870s. These machines featured ' +
-    '"blind typing" technology, where characters were printed on upside-down pages that ' +
+    'blind typing technology, where characters were printed on upside-down pages that ' +
     'remained unseen until completion. Since then, we have seen several updates in design,' +
     ' layout, technology, and function that are more efficient and user-friendly.' +
     ' The type-writer has changed shape dramatically over the years, eventually becoming' +
@@ -43,7 +43,6 @@ app.factory('Paragraph', function () {
         var successCount = 0;
         var errorCount = 0;
         var inputLength = words.length;
-        console.log("Inputlength", inputLength)
 
         for (var i = 0; i < inputLength; i++) {
             if (words[i] == para[i]) {
@@ -59,8 +58,6 @@ app.factory('Paragraph', function () {
 
     paragraph.calculateSpeed = function (input, time) {
 
-        console.log("Input", input)
-        console.log("Time", time)
         var speed = {kpm: 0, wpm: 0};
 
         speed.kpm = Math.floor(input.length / time); //Keys per minute
@@ -74,62 +71,17 @@ app.factory('Paragraph', function () {
     return paragraph;
 });
 
-app.controller('main_controller', ['$scope', 'Paragraph', '$interval', '$window', function ($scope, Paragraph, $interval, $window) {
-
-    var minutes = 1;
-    var seconds = 60;
-
-    $scope.resetTest =function () {
-        $scope.timerStatus = false;
-        $scope.paragraph = Paragraph.getParagraph(0);
-        $scope.timer = minutes * seconds;
-        $scope.minutes = minutes;
-        $scope.seconds = '00';
-        $scope.userText = '';
-        $scope.speed = {};
-    };
-
-    $scope.resetTest();
-
-    $scope.startTime = function () {
-        var startTimer = $interval(function () {
-
-            $scope.timer = $scope.timer - 1;
-            $scope.minutes = Math.floor($scope.timer / seconds);
-            $scope.seconds = $scope.timer % seconds;
-
-            if ($scope.timer == 0) {
-                $interval.cancel(startTimer);
-                $scope.accuracy = Paragraph.calculateAccuracy($scope.userText);
-                $scope.speed = Paragraph.calculateSpeed($scope.userText, minutes);
-
-                $scope.openModal();
-            }
-        }, 1000);
-    };
-
-    $scope.openModal = function () {
-        $window.jQuery("#result_modal").modal('show');
-    };
-
-    $window.jQuery("#result_modal").on('hidden.bs.modal', function () {
-        $scope.resetTest();
-    });
-
-
-}]);
-
 
 /**
  *
- * This will look for changes in scope and render html
+ * This will look for dynamic changes in html and will render it
  */
-app.directive('dynamic', function ($compile) {
+app.directive('tyRender', function ($compile) {
     return {
         restrict: 'A',
         replace: true,
         link: function (scope, ele, attrs) {
-            scope.$watch(attrs.dynamic, function (html) {
+            scope.$watch(attrs.tyRender, function (html) {
                 ele.html(html);
                 $compile(ele.contents())(scope);
             });
@@ -140,10 +92,12 @@ app.directive('dynamic', function ($compile) {
 
 /**
  *
- * Typing Directive
+ * Typing Directive:
+ *
+ * This watches for the input provided by user and based on login highlights the color of text
  */
 
-app.directive('typingSpeed', function (Paragraph) {
+app.directive('tySpeed', function (Paragraph) {
     return {
         restrict: 'AE',
         link: function (scope, element, attrs) {
@@ -184,3 +138,53 @@ app.directive('typingSpeed', function (Paragraph) {
         }
     };
 });
+
+/**
+ * Main Controller :
+ *  - Manages Timer and Result Modal
+ */
+app.controller('main_controller', ['$scope', 'Paragraph', '$interval', '$window', function ($scope, Paragraph, $interval, $window) {
+
+    var minutes = 2;
+    var seconds = 60;
+
+    $scope.resetTest =function () {
+        $scope.timerStatus = false;
+        $scope.paragraph = Paragraph.getParagraph(0);
+        $scope.timer = minutes * seconds;
+        $scope.minutes = minutes;
+        $scope.seconds = '00';
+        $scope.userText = '';
+        $scope.speed = {};
+        console.log("in reset");
+    };
+
+    $scope.resetTest();
+
+    $scope.startTime = function () {
+        var startTimer = $interval(function () {
+
+            $scope.timer = $scope.timer - 1;
+            $scope.minutes = Math.floor($scope.timer / seconds);
+            $scope.seconds = $scope.timer % seconds;
+
+            if ($scope.timer == 0) {
+                $interval.cancel(startTimer);
+                $scope.accuracy = Paragraph.calculateAccuracy($scope.userText);
+                $scope.speed = Paragraph.calculateSpeed($scope.userText, minutes);
+
+                $scope.openModal();
+            }
+        }, 1000);
+    };
+
+    $scope.openModal = function () {
+        $window.jQuery("#result_modal").modal('show');
+    };
+
+    $window.jQuery("#result_modal").on('hide.bs.modal', function () {
+        $scope.resetTest();
+    });
+
+
+}]);

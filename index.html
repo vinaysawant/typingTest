@@ -19,14 +19,11 @@
 
     <div class="jumbotron f18">
 
-        <div class="center-block time">Time Left: {{minutes}}:{{seconds}}</div>
-        <div dynamic="paragraph"></div>
-        <!--{{paragraph}}-->
+        <div class="center-block time">Time : <span class="timer">{{minutes}}:{{seconds}}</span></div>
+        <div ty-render="paragraph"></div>
     </div>
 
-    <a href="#" ng-click="openModal()">Link</a>
-
-    <textarea typing-speed class="form-control text-area" rows="5" ng-model="userText"
+    <textarea ty-speed class="form-control text-area" rows="5" ng-model="userText"
               placeholder="Start typing here to start the test..."></textarea>
 </div>
 
