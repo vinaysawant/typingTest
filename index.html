@@ -20,7 +20,7 @@
     <div class="jumbotron f18">
 
         <div class="center-block time">Time : <span class="timer">{{minutes}}:{{seconds}}</span>
-            <span class="pull-right reset">
+            <span class="pull-right reset" ng-show="timerStatus">
                 <a href="#"
                    ng-click="resetTest()">Reset</a>
             </span>
