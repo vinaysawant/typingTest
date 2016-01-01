@@ -32,7 +32,8 @@ app.factory('Paragraph', function () {
     };
 
     paragraph.getFailureKeySpan = function (letter) {
-        return '<span class="typing-error">' + letter + '</span>';
+
+        return (letter == " ") ? '<span class="typing-error-bg">' + letter + '</span>' : '<span class="typing-error">' + letter + '</span>';
     };
 
     paragraph.calculateAccuracy = function (input) {
@@ -97,14 +98,26 @@ app.directive('tyRender', function ($compile) {
  * This watches for the input provided by user and based on login highlights the color of text
  */
 
-app.directive('tySpeed', function (Paragraph) {
+app.directive('tySpeed', function (Paragraph,$window) {
     return {
-        restrict: 'AE',
+        restrict: 'A',
         link: function (scope, element, attrs) {
+
+
+            /**
+             * Disabled Cut Copy and Paste Functions
+             */
+            element.on('cut copy paste', function (event) {
+                $window.alert("Why are you in a hurry :)");
+                event.preventDefault();
+            });
 
             scope._paragraph = scope.paragraph;
             var paragraph_length = scope._paragraph.length;
 
+            /**
+             * Watch for user input
+             */
             scope.$watch('userText', function (newVal, oldVal) {
 
                 var input_text_length = newVal.length;
@@ -147,29 +160,17 @@ app.controller('main_controller', ['$scope', 'Paragraph', '$interval', '$window'
 
     var minutes = 2;
     var seconds = 60;
-
-    $scope.resetTest =function () {
-        $scope.timerStatus = false;
-        $scope.paragraph = Paragraph.getParagraph(0);
-        $scope.timer = minutes * seconds;
-        $scope.minutes = minutes;
-        $scope.seconds = '00';
-        $scope.userText = '';
-        $scope.speed = {};
-        console.log("in reset");
-    };
-
-    $scope.resetTest();
+    var startTimer;
 
     $scope.startTime = function () {
-        var startTimer = $interval(function () {
+        startTimer = $interval(function () {
 
             $scope.timer = $scope.timer - 1;
             $scope.minutes = Math.floor($scope.timer / seconds);
             $scope.seconds = $scope.timer % seconds;
 
-            if ($scope.timer == 0) {
-                $interval.cancel(startTimer);
+            if ($scope.timer <= 0) {
+                $scope.stopTime();
                 $scope.accuracy = Paragraph.calculateAccuracy($scope.userText);
                 $scope.speed = Paragraph.calculateSpeed($scope.userText, minutes);
 
@@ -178,13 +179,27 @@ app.controller('main_controller', ['$scope', 'Paragraph', '$interval', '$window'
         }, 1000);
     };
 
+    $scope.stopTime = function(){
+        $interval.cancel(startTimer);
+    };
+
+
+    $scope.resetTest = function () {
+        $scope.timerStatus = false;
+        $scope.paragraph = Paragraph.getParagraph(0);
+        $scope.timer = minutes * seconds;
+        $scope.minutes = minutes;
+        $scope.seconds = '00';
+        $scope.userText = '';
+        $scope.speed = {};
+        $scope.stopTime();
+    };
+
+    $scope.resetTest();
+
+
     $scope.openModal = function () {
         $window.jQuery("#result_modal").modal('show');
     };
-
-    $window.jQuery("#result_modal").on('hide.bs.modal', function () {
-        $scope.resetTest();
-    });
-
 
 }]);

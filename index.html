@@ -19,11 +19,16 @@
 
     <div class="jumbotron f18">
 
-        <div class="center-block time">Time : <span class="timer">{{minutes}}:{{seconds}}</span></div>
+        <div class="center-block time">Time : <span class="timer">{{minutes}}:{{seconds}}</span>
+            <span class="pull-right reset">
+                <a href="#"
+                   ng-click="resetTest()">Reset</a>
+            </span>
+        </div>
         <div ty-render="paragraph"></div>
     </div>
 
-    <textarea ty-speed class="form-control text-area" rows="5" ng-model="userText"
+    <textarea ty-speed ng-trim="false" ng-disabled="timer <=0" class="form-control text-area" rows="5" ng-model="userText"
               placeholder="Start typing here to start the test..."></textarea>
 </div>
 
@@ -32,7 +37,8 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel">Your Score: </h4>
             </div>
             <div class="modal-body">
