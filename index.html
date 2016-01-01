@@ -9,26 +9,22 @@
 </head>
 <body>
 
-<nav class="navbar navbar-default navbar-static-top">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">Typing Test</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-            <div class="nav navbar-text navbar-right">
-                Time: 2:00
-            </div>
-        </div>
-        <!--/.nav-collapse -->
+<nav class="navbar">
+    <div class="center-block head">
+        TYPING TEST
     </div>
 </nav>
 
 <div class="container" style="height: 100%;">
-    <div class="jumbotron f18" dynamic="paragraph">
+
+    <div class="jumbotron f18">
+
+        <div class="center-block time">Time Left: 2:00</div>
+        <div dynamic="paragraph"></div>
         <!--{{paragraph}}-->
     </div>
 
-    <textarea typing-speed class="form-control f18" rows="10" ng-model="userText" placeholder="Start typing here to start the test..."></textarea>
+    <textarea typing-speed class="form-control text-area" rows="5" ng-model="userText" placeholder="Start typing here to start the test..."></textarea>
     {{userText}}
 </div>
 

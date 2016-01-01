@@ -1,15 +1,47 @@
 .typing-success{
     font-weight: bold;
-    color: green
+    color: #cccccc;
 }
 
 .typing-error{
     font-weight: bold;
     color: red;
 }
-.f18{
+.head{
+    font-weight: bold;
+    font-size: 28px;
+    padding-top: 15px;
+    text-align: center;
+}
+
+.time{
+    text-align: center;
     font-size: 22px;
+    color: #999999;
+    margin-bottom: 20px;
+}
+.f18{
+    font-size: 18px;
     height: 40%;
-    color: gray;
-    overflow: scroll;
+    background-color: #fff;
+    border: 1px solid #d9d9d9;
+    color: #000000;
+    text-align: justify;
+    line-height: 30px;
+    /*overflow: scroll;*/
+    padding: 25px;
+    margin-bottom: 5px;
+}
+
+.text-area{
+    margin-top: 5px;
+    font-size: 18px;
+    height: 40%;
+    background-color: #efefef;
+    border: 1px solid #d9d9d9;
+    color: #000000;
+    text-align: justify;
+    line-height: 30px;
+    /*overflow: scroll;*/
+    padding: 25px;
 }
