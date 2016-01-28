@@ -1,3 +1,5 @@
+/*This is comment Section
+*/
 var app = angular.module("typingApp", []);
 
 /**
